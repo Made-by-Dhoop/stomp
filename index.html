@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STOMP — Bournemouth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --black: #111111;
+  --white: #ffffff;
+  --off: #f5f5f5;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; width: 100%; max-width: 100%; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+.nav-logo {
+  display: block;
+  text-decoration: none;
+}
+
+.nav-logo img {
+  height: 22px;
+  width: auto;
+}
+
+.nav-right {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.nav-right a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #555;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-right a:hover { color: var(--black); }
+
+.hero {
+  margin-top: 49px;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.hero-text {
+  padding: 64px 20px 36px;
+}
+
+.hero-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.hero-title {
+  font-size: clamp(36px, 10vw, 72px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--black);
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  text-decoration: none;
+  border: 1px solid var(--black);
+  color: var(--black);
+  background: transparent;
+  transition: background 0.2s, color 0.2s;
+}
+
+.hero-btn.filled {
+  background: var(--black);
+  color: var(--white);
+}
+
+.hero-btn:hover { background: var(--black); color: var(--white); }
+.hero-btn.filled:hover { background: #333; }
+
+.hero-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* ── ABOUT ── */
+.about {
+  background: var(--black);
+  padding: 40px 20px;
+}
+
+.about-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #555;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.about p {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+.about p + p { margin-top: 10px; }
+
+/* ── 3 IMAGE GRID ── */
+.three-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3px;
+  background: #ddd;
+}
+
+.three-grid img {
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+  width: 100%;
+}
+
+/* ── FULL WIDTH IMAGES ── */
+.img-wide {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.img-wide.landscape { aspect-ratio: 16/9; }
+.img-wide.portrait { aspect-ratio: 3/4; }
+.img-wide.square { aspect-ratio: 1/1; }
+.img-wide.natural { height: auto; }
+
+/* ── STATEMENT BLOCK ── */
+.statement {
+  background: var(--black);
+  padding: 56px 20px;
+}
+
+.statement p {
+  font-size: clamp(18px, 5vw, 30px);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  max-width: 480px;
+}
+
+.statement p em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ── HOLD SECTION ── */
+.hold {
+  background: var(--white);
+  padding: 56px 20px;
+}
+
+.hold h2 {
+  font-size: clamp(22px, 6vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  max-width: 420px;
+}
+
+.hold h2 em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ── FAQ ── */
+.faq {
+  background: var(--white);
+  padding: 0 20px 56px;
+  border-top: 1px solid #eee;
+}
+
+.faq h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999;
+  padding: 32px 0 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.faq-item {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.faq-q {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.faq-a {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.7;
+}
+
+/* ── FIND US ── */
+#find-us {
+  background: var(--white);
+  padding: 48px 20px;
+  border-top: 1px solid #eee;
+}
+
+#find-us h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 28px;
+}
+
+.find-grid {
+  display: grid;
+  gap: 32px;
+}
+
+.find-block h3 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.find-block address {
+  font-style: normal;
+  font-size: 14px;
+  color: var(--black);
+  line-height: 1.8;
+}
+
+.hours-list { list-style: none; }
+
+.hours-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.hours-list .day {
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  padding: 64px 20px 40px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 56px;
+}
+
+.footer-logo {
+  display: block;
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.footer-logo img {
+  height: 26px;
+  width: auto;
+  filter: invert(1);
+}
+
+.footer-desc {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.8;
+  max-width: 22ch;
+}
+
+.footer-col-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #444;
+  display: block;
+  margin-bottom: 18px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col ul li + li { margin-top: 12px; }
+
+.footer-col a {
+  font-size: 12px;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover { color: var(--white); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-bottom p,
+.footer-bottom a {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #333;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover { color: var(--white); }
+
+/* ── DESKTOP ── */
+@media (min-width: 768px) {
+  nav { padding: 18px 40px; }
+  .hero-text { padding: 80px 40px 48px; }
+  .hero-img { aspect-ratio: 16/9; }
+  .about { padding: 56px 40px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
+  .statement { padding: 80px 40px; }
+  .hold { padding: 80px 40px; }
+  .faq { padding: 0 40px 80px; }
+  #find-us { padding: 64px 40px; }
+  .find-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 80px 40px 48px; }
+  .footer-top { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 64px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><img src="stomp-logo1.jpeg" alt="Stomp"></a>
+  <div class="nav-right">
+    <a href="#" class="nav-menu">Menu</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-label">STOMP · Bournemouth</span>
+    <h1 class="hero-title">Street Culture. Right in the Arcade.</h1>
+    <div class="hero-btns">
+      <a href="https://instagram.com/stompdownsouth" target="_blank" rel="noopener" class="hero-btn filled">Get In Touch</a>
+      <a href="#footer" class="hero-btn">Come Find Us</a>
+    </div>
+  </div>
+  <img src="mark-adriane-bO3S03I2Aw8-unsplash.jpg" alt="Street culture" class="hero-img">
+</section>
+
+<!-- ABOUT -->
+<div class="about">
+  <span class="about-label">About STOMP</span>
+  <div>
+    <p>Stomp is an independent street culture store in the heart of Bournemouth's Arcade. We stock the brands people actually wear — Nike Air Max, Stone Island, Stüssy, Carhartt, North Face, football kits, graffiti supplies and more.</p>
+    <p>No algorithms. No drops you need to queue online for. Just good stock, fairly priced, in a shop you can walk into. Come have a look around.</p>
+  </div>
+</div>
+
+<!-- FULL: Trainers rack -->
+<img src="hermes-rivera-OX_en7CXMj4-unsplash.jpg" alt="Trainers" class="img-wide landscape">
+
+<!-- FULL: Trainer wall -->
+<img src="trainers-wall1.jpeg" alt="Trainer wall" class="img-wide landscape">
+
+<!-- FULL: Stone Island portrait -->
+<img src="619304983_18563341345026117_1653270822778645099_n.jpg" alt="Stone Island" class="img-wide portrait">
+
+<!-- STATEMENT -->
+<div class="statement">
+  <p>Our stock changes too fast to keep a website up to date. <em>Get in touch or visit us in Bournemouth, The Arcade.</em></p>
+</div>
+
+<!-- FULL: Orange TN -->
+<img src="nike1.jpg" alt="Nike TN detail" class="img-wide portrait">
+
+<!-- FULL: North Face beanie -->
+<img src="north face coat 2.png" alt="North Face" class="img-wide portrait">
+
+<!-- FULL: AM95 -->
+<img src="jd_752433_a.webp" alt="Nike Air Max 95" class="img-wide natural">
+
+<!-- FULL: North Face back -->
+<img src="north face coat 1.png" alt="North Face rear" class="img-wide portrait">
+
+<!-- HOLD -->
+<div class="hold">
+  <h2>Seen something you like? get in touch, we can <em>possibly</em> hold it for you.</h2>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <a href="#" class="footer-logo"><img src="stomp-logo1.jpeg" alt="Stomp"></a>
+      <p class="footer-desc">Independent streetwear. Bournemouth Arcade, Unit 2.</p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Navigate</span>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="https://instagram.com/stompdownsouth" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Visit</span>
+      <ul>
+        <li><a href="#find-us">Unit 2, Bournemouth Arcade</a></li>
+        <li><a href="#find-us">BH1 2AF</a></li>
+        <li><a href="#find-us">Mon–Sat 11–5 · Sun 11–4</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Social</span>
+      <ul>
+        <li><a href="https://instagram.com/stompdownsouth" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Stomp. All rights reserved.</p>
+    <a href="https://madebydhoop.co.uk" target="_blank" rel="noopener">Website by Dhoop</a>
+  </div>
+</footer>
+
+</body>
+</html>
