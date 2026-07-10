@@ -387,6 +387,181 @@ footer {
 
 .footer-bottom a:hover { color: var(--white); }
 
+/* ── MENU TOGGLE ── */
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #555;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.menu-toggle:hover { color: var(--black); }
+
+/* ── SLIDE-OUT NAV ── */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 199;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+}
+
+.nav-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: none;
+  background: var(--black);
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 0 28px 40px;
+  overflow-y: auto;
+}
+
+.side-menu-top {
+  padding: 16px 0;
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+.side-menu-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.side-menu-logo img {
+  height: 20px;
+  width: auto;
+  filter: invert(1);
+}
+
+.menu-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  position: relative;
+  padding: 0;
+}
+
+.menu-close span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 2px;
+  background: var(--white);
+  transform-origin: center;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.menu-close span:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.menu-close span:nth-child(2) { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.menu-close:hover span { background: var(--white); opacity: 0.6; }
+
+.side-menu-section {
+  margin-bottom: 36px;
+}
+
+.side-menu-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #555;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.side-menu-links {
+  list-style: none;
+}
+
+.side-menu-links li + li { margin-top: 14px; }
+
+.side-menu-links a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.side-menu-links a:hover {
+  color: #ccc;
+  transform: translateX(4px);
+}
+
+.side-menu-links .icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.side-menu-info p {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.9;
+}
+
+.side-menu-info strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.side-menu-cta {
+  margin-top: auto;
+  padding-top: 32px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.side-menu-cta a {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px;
+  background: var(--white);
+  color: var(--black);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+
+.side-menu-cta a:hover { opacity: 0.85; }
+
+body.menu-open { overflow: hidden; }
+
 /* ── DESKTOP ── */
 @media (min-width: 768px) {
   nav { padding: 18px 40px; }
@@ -400,6 +575,13 @@ footer {
   .find-grid { grid-template-columns: 1fr 1fr; }
   footer { padding: 80px 40px 48px; }
   .footer-top { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 64px; }
+  .nav-logo img { height: 30px; }
+  .footer-logo img { height: 36px; }
+  .side-menu { padding: 0 60px 60px; }
+  .side-menu-top { padding: 18px 0; }
+  .menu-close { width: 26px; height: 26px; }
+  .menu-close span { width: 20px; }
+  .side-menu-section, .side-menu-cta { max-width: 420px; }
 }
 </style>
 </head>
@@ -409,9 +591,65 @@ footer {
 <nav>
   <a href="#" class="nav-logo"><img src="stomp-logo1.jpeg" alt="Stomp"></a>
   <div class="nav-right">
-    <a href="#" class="nav-menu">Menu</a>
+    <button type="button" class="menu-toggle" id="menuToggle">Menu</button>
   </div>
 </nav>
+
+<!-- SLIDE-OUT MENU -->
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="side-menu-top">
+    <a href="#" class="side-menu-logo"><img src="stomp-logo1.jpeg" alt="Stomp"></a>
+    <button type="button" class="menu-close" id="menuClose" aria-label="Close menu">
+      <span></span><span></span>
+    </button>
+  </div>
+
+  <div class="side-menu-section">
+    <span class="side-menu-label">Get In Touch</span>
+    <ul class="side-menu-links">
+      <li>
+        <a href="tel:+447539185783">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          07539 185783
+        </a>
+      </li>
+      <li>
+        <a href="https://wa.me/447539185783" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.06c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.12-.42-.13-.95-.31-1.63-.6-2.87-1.24-4.74-4.12-4.88-4.31-.14-.19-1.17-1.55-1.17-2.96 0-1.4.73-2.09 1-2.38.26-.28.57-.35.76-.35.19 0 .38 0 .54.01.17.01.41-.06.64.49.24.57.82 1.98.89 2.12.07.15.12.32.02.51-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.03 1.12 1 2.06 1.31 2.35 1.46.29.15.46.13.63-.05.17-.19.72-.84.92-1.13.19-.29.39-.24.65-.14.27.1 1.68.79 1.97.93.29.15.48.22.55.34.07.13.07.72-.17 1.4z"/></svg>
+          WhatsApp Us
+        </a>
+      </li>
+      <li>
+        <a href="https://instagram.com/stompdownsouth" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          @stompdownsouth
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="side-menu-section">
+    <span class="side-menu-label">Visit The Shop</span>
+    <div class="side-menu-info">
+      <p><strong>Unit 2, The Bournemouth Arcade</strong><br>Bournemouth, BH1 2AF</p>
+      <p style="margin-top:10px;">Mon–Sat 11–5 · Sun 11–4</p>
+    </div>
+  </div>
+
+  <div class="side-menu-section">
+    <ul class="side-menu-links">
+      <li><a href="https://www.google.com/maps/search/?api=1&query=Bournemouth+Arcade+BH1+2AF" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Get Directions
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="side-menu-cta">
+    <a href="https://wa.me/447539185783" target="_blank" rel="noopener">Message Us on WhatsApp</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -501,5 +739,33 @@ footer {
   </div>
 </footer>
 
+<script>
+(function() {
+  var toggle = document.getElementById('menuToggle');
+  var close = document.getElementById('menuClose');
+  var overlay = document.getElementById('navOverlay');
+  var menu = document.getElementById('sideMenu');
+  var body = document.body;
+
+  function openMenu() {
+    menu.classList.add('open');
+    overlay.classList.add('open');
+    body.classList.add('menu-open');
+  }
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    body.classList.remove('menu-open');
+  }
+
+  toggle.addEventListener('click', openMenu);
+  close.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+})();
+</script>
 </body>
 </html>
